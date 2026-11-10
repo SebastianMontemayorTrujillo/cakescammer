@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Evidencia local de mejora recursiva de Pasteles: versiones, benchmarks y resultados medidos.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/panel.css">
+  <script src="/panel.js" defer></script>
+  <title>Pasteles · Laboratorio RSI</title>
+</head>
+<body>
+  <a class="saltar" href="#contenido">Ir al contenido</a>
+  <aside class="lateral">
+    <a class="marca" href="#evolucion" aria-label="Pasteles, inicio"><span class="isotipo">p.</span><span>pasteles<span class="marca-sub">LABORATORIO RSI</span></span></a>
+    <p class="nav-label">OBSERVATORIO</p>
+    <nav aria-label="Secciones del panel">
+      <a class="nav-item" href="#evolucion"><span aria-hidden="true">↗</span> Evolución <small>01</small></a>
+      <a class="nav-item" href="#benchmarks"><span aria-hidden="true">◎</span> Benchmarks <small>02</small></a>
+      <a class="nav-item" href="#version"><span aria-hidden="true">◇</span> Versión activa <small>03</small></a>
+      <a class="nav-item" href="#historial"><span aria-hidden="true">≡</span> Historial <small>04</small></a>
+    </nav>
+    <div class="lateral-nota"><span class="pulso" aria-hidden="true"></span> Evidencia local<p>El agente propone.<br>Las evaluaciones deciden.</p></div>
+    <div class="lateral-pie"><a href="/informe.pdf" target="_blank" rel="noopener">Leer el informe PDF ↗</a><a href="/informe.tex" download="pasteles_rsi.tex">Descargar LaTeX ↓</a><span>Demo privada · pagos simulados</span></div>
+  </aside>
+  <div class="pagina">
+    <header class="barra">
+      <span>Proyecto Pasteles <span class="separador">/</span> <strong>Mejora recursiva</strong></span>
+      <div class="barra-acciones"><span class="etiqueta neutra">Solo lectura</span><button id="actualizar" class="boton secundario" type="button">↻ Actualizar</button></div>
+    </header>
+    <main id="contenido">
+      <div id="error" class="aviso error" role="alert" hidden></div>
+      <div id="avisos" class="aviso" role="status" hidden></div>
+      <section id="evolucion" aria-labelledby="titulo">
+        <div class="encabezado">
+          <div><p class="ceja">DEL CAMBIO A LA EVIDENCIA</p><h1 id="titulo">Evolución del agente</h1><p class="bajada">Qué mejoró, cómo se midió y qué todavía falla.</p></div>
+          <div class="selector" role="group" aria-label="Tipo de evidencia"><button id="modo-real" type="button" aria-pressed="true">Modelo real</button><button id="modo-simulacion" type="button" aria-pressed="false">Simulación</button></div>
+        </div>
+        <div class="contexto"><span id="etiqueta-modo" class="etiqueta verde">MODELO REAL</span><p id="descripcion-modo">Cargando los reportes locales…</p><span id="actualizado" class="tiempo" aria-live="polite"></span></div>
+        <p class="aviso">Las curvas son evaluaciones sobre guiones sintéticos. Tus conversaciones de Telegram no se puntúan automáticamente. Una nueva revisión del código necesita su propia evaluación.</p>
+        <article class="panel experiencia"><div class="panel-cabecera"><div><p class="ceja">REGRESIONES DE EXPERIENCIA · INSTRUMENTO SEPARADO</p><h2>Respuestas breves, disponibilidad y pago</h2></div><span id="experiencia-etiqueta" class="etiqueta neutra">Sin medición</span></div><div id="experiencia-resultados" class="tabla-scroll"></div><p class="pie-panel">Escenarios públicos derivados de fallos observados y variantes sintéticas. Es evaluación de desarrollo, sin reserva independiente; no mide satisfacción ni conversión con clientes.</p></article>
+        <div id="sin-datos" class="vacio" hidden><h2>Aún no hay reportes en esta línea</h2><p>El panel mostrará las mediciones cuando existan reportes RSI locales. Abrir esta página no ejecuta evaluaciones.</p></div>
+        <div class="indicadores" aria-label="Mediciones de la corrida seleccionada">
+          <article class="indicador"><p>Objetivos de la corrida RSI</p><strong id="kpi-funcional">—</strong><span id="kpi-funcional-nota">Sin medición</span></article>
+          <article class="indicador"><p>Controles de seguridad</p><strong id="kpi-seguridad">—</strong><span id="kpi-seguridad-nota">Sin medición</span></article>
+          <article class="indicador"><p>Objetivos en reserva</p><strong id="kpi-reserva">—</strong><span id="kpi-reserva-nota">No evaluada</span></article>
+          <article class="indicador"><p>Gasto acumulado · USD</p><strong id="kpi-gasto">—</strong><span id="kpi-gasto-nota">Cuenta local compartida</span></article>
+        </div>
+        <div class="panel curva">
+          <div class="panel-cabecera"><div><p class="ceja">COMPARACIÓN DENTRO DE UNA CORRIDA</p><h2>La trayectoria de una hipótesis</h2></div><div class="campo"><label for="corrida">Seleccionar corrida</label><select id="corrida"></select></div></div>
+          <div class="curva-resumen"><strong id="mejora">—</strong><span id="mejora-nota">Cada punto conserva su numerador y denominador.</span><span id="estado-corrida" class="etiqueta neutra">Sin datos</span></div>
+          <div id="grafico" class="grafico" role="img" aria-label="Sin mediciones"></div>
+          <div class="leyenda"><span><i class="muestra base"></i>Base</span><span><i class="muestra aceptada"></i>Publicada</span><span><i class="muestra rechazada"></i>No publicada</span><span class="leyenda-nota">Eje: objetivos cumplidos / objetivos aplicables</span></div>
+          <div id="detalle-corrida" class="pie-panel"></div>
+        </div>
+      </section>
+
+      <section id="benchmarks" aria-labelledby="titulo-benchmarks">
+        <div class="titulo-seccion"><div><p class="ceja">CÓMO LEER LOS RESULTADOS</p><h2 id="titulo-benchmarks">Benchmarks con una pregunta concreta</h2></div><span class="texto-secundario">Instrumentos separados, criterios congelados</span></div>
+        <div class="benchmarks">
+          <article class="panel benchmark"><div class="benchmark-num">01 <span>CONVERSACIÓN</span></div><h3>¿Resuelve lo que se le pide?</h3><p>Comprueba objetivos observables: cotizar, volver a cotizar tras un cambio y usar correctamente el contexto autorizado.</p><div class="formula">Objetivos cumplidos <span>/ objetivos aplicables</span></div><details><summary>Protocolo y denominador</summary><p>RSI v1: 12 conversaciones sintéticas de desarrollo y 36 reservadas. Los fallos y oportunidades omitidas permanecen en el denominador. Tres comprobaciones solo aplican a extracción preparada: por eso la simulación y el modelo real pueden tener denominadores diferentes.</p><p>Se comparan pares del mismo tipo, partición, instrumento, configuración y criterios. No se calcula mejora cruzando líneas distintas.</p></details></article>
+          <article class="panel benchmark"><div class="benchmark-num">02 <span>SEGURIDAD</span></div><h3>¿Mantiene las reglas del sistema?</h3><p>Verifica salida válida, revisión, cotización reproducible y vigente, coherencia del pago y ausencia de cobros reales; añade controles adversarios.</p><div class="formula">Controles correctos <span>/ controles previstos</span></div><details><summary>Qué significa el 100%</summary><p>La compuerta exige todos los controles correctos y cero regresiones por comprobación. Un promedio mejor no compensa un fallo nuevo. Las comprobaciones de cada turno están relacionadas: no son usuarios independientes.</p><p>El 100% describe los controles ejecutados. No prueba inmunidad universal a prompt injection ni calidad de toda conversación posible.</p></details></article>
+          <article class="panel benchmark"><div class="benchmark-num">03 <span>COMERCIAL · DETERMINISTA</span></div><h3>¿Aprovecha una oportunidad pertinente?</h3><p>Mide opciones de mayor valor autorizadas, cierres preparados y el importe de las propuestas en 10 escenarios sintéticos.</p><div class="formula">Ticket potencial <span>≠ ingresos ni conversión</span></div><details><summary>Cómo se mide la venta</summary><p>Valor: oportunidades aprovechadas / oportunidades declaradas. Cierre: invitaciones correctas / oportunidades de cierre, incluso si falta la cotización. Ticket: promedio de propuestas existentes en los escenarios de valor; siempre se muestra N.</p><p>Requiere permiso explícito para porciones extra, presupuesto suficiente y una opción viable. No mide persuasión ni decisiones de personas. Esta suite es determinista incluso al acompañar una corrida con modelo real.</p></details></article>
+          <article class="panel benchmark"><div class="benchmark-num">04 <span>RESERVA INDEPENDIENTE</span></div><h3>¿Se sostiene fuera del desarrollo?</h3><p>Evalúa la versión en otra partición sintética. El constructor no recibe sus respuestas ni sus fallos concretos.</p><div class="formula">Evaluación final <span>separada de la selección</span></div><details><summary>Qué podemos concluir</summary><p>El ciclo selecciona con desarrollo; la evaluación reservada se ejecuta aparte y actualmente no es una condición automática de publicación. Si se usan sus errores para diseñar mejoras, se necesita una nueva reserva independiente.</p><p>Estos resultados muestran mejora empírica. No se han implementado pruebas de significancia estadística ni intervalos de confianza en el juez RSI.</p></details></article>
+        </div>
+        <div class="dos-columnas">
+          <article class="panel"><div class="panel-cabecera"><div><p class="ceja">MEDICIÓN APARTE</p><h3>Reserva de la línea seleccionada</h3></div><span id="reserva-etiqueta" class="etiqueta neutra">No evaluada</span></div><dl id="reserva-datos" class="datos-lista"></dl><p id="reserva-nota" class="pie-panel">Sin evidencia reservada.</p></article>
+          <article class="panel"><div class="panel-cabecera"><div><p class="ceja">BASE → ÚLTIMA PUBLICADA DE ESTA CORRIDA</p><h3>Señales comerciales</h3></div><span class="etiqueta ambar">Determinista</span></div><dl id="comercial-datos" class="datos-lista"></dl><p class="pie-panel">Importes del catálogo demo en MXN. Las propuestas sintéticas no son ventas observadas.</p></article>
+        </div>
+      </section>
+
+      <section id="version" aria-labelledby="titulo-version">
+        <div class="titulo-seccion"><div><p class="ceja">QUÉ CAMBIA EN EL AGENTE</p><h2 id="titulo-version">Una versión, una decisión comprobable</h2></div><span class="texto-secundario">Evolucionan el harness y las skills; los pesos no cambian</span></div>
+        <div class="dos-columnas">
+          <article class="panel"><div class="panel-cabecera"><h3>Versión activa de esta línea</h3><span id="version-modo" class="etiqueta verde">Real</span></div><p class="hash" id="version-id">Sin versión</p><dl id="harness" class="datos-lista"></dl><p class="pie-panel">El identificador conserva el linaje. La versión de simulación nunca se publica en el bot real.</p></article>
+          <article class="panel compuertas"><div class="panel-cabecera"><h3>Condiciones para publicar</h3><span class="etiqueta neutra">Juez fijo</span></div><ol><li><strong>Evidencia completa y comparable</strong><span>Mismo instrumento y oportunidades pareadas.</span></li><li><strong>100% de seguridad, cero regresiones</strong><span>En conversación y en la suite comercial.</span></li><li><strong>Al menos una mejora</strong><span>Funcional o comercial; empate total → rechazo.</span></li><li><strong>Operación dentro de los límites</strong><span>p95 ≤ 30 s/caso y cargo máximo ≤ USD 0.10/caso real.</span></li></ol></article>
+        </div>
+        <div class="publicacion"><span class="etiqueta neutra">ACTIVACIÓN</span><p>El ciclo se inicia explícitamente con el bot detenido. Una candidata aprobada se registra y publica; el bot la carga al reiniciar y crear la conversación. El panel solo observa: no propone cambios ni activa versiones.</p></div>
+      </section>
+
+      <section id="historial" aria-labelledby="titulo-historial">
+        <div class="titulo-seccion"><div><p class="ceja">TAMBIÉN CUENTAN LOS RESULTADOS NEGATIVOS</p><h2 id="titulo-historial">Historial de intentos</h2></div><span id="cantidad-corridas" class="texto-secundario"></span></div>
+        <div id="lista-historial" class="historial"></div>
+      </section>
+      <footer class="pie"><p>Fuente: reportes agregados locales · actualización cada 30 s · sin llamadas al modelo.</p><p>RSI v1 y suite comercial. El instrumento anterior de 8/32 conversaciones conserva sus reportes fuera de esta vista.</p></footer>
+      <p class="documentos"><a href="/informe.pdf" target="_blank" rel="noopener">Informe completo · PDF ↗</a><a href="/informe.tex" download="pasteles_rsi.tex">Fuente LaTeX ↓</a></p>
+    </main>
+  </div>
+</body>
+</html>

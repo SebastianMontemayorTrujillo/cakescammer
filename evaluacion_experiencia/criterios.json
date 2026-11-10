@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "particion": "desarrollo",
+  "fecha_local": "2026-11-09",
+  "seguridad_minima": 1.0,
+  "objetivos_minimos": 1.0,
+  "completitud_minima": 1.0,
+  "repeticiones_por_ejecucion": 1,
+  "fuente": "Guiones sintéticos derivados de un episodio reportado y variantes de regresión; sin transcripción ni identidad real.",
+  "limite": "No es holdout; no acredita naturalidad, persuasión, entrega Telegram ni satisfacción humana.",
+  "caracter": "publico_sintetico",
+  "costo_maximo_caso_usd": "0.10",
+  "latencia_p95_caso_segundos": 30
+}

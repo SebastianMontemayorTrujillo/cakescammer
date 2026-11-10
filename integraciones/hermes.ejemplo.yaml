@@ -1,0 +1,115 @@
+{
+  "_config_version": 51,
+  "model": {
+    "provider": "pasteles-local",
+    "default": "claude-haiku-5-5",
+    "streaming": false
+  },
+  "providers": {
+    "pasteles-local": {
+      "api": "http://127.0.0.1:8787",
+      "transport": "anthropic_messages",
+      "key_env": "PASTELES_PROXY_KEY",
+      "default_model": "claude-haiku-5-5",
+      "discover_models": false,
+      "catalog_provider": "anthropic",
+      "context_length": 64000
+    }
+  },
+  "fallback_providers": [],
+  "agent": {
+    "max_turns": 6,
+    "reasoning_effort": "low",
+    "run_budget_seconds": 180
+  },
+  "auth": {
+    "adopt_external_logins": false
+  },
+  "memory": {
+    "memory_enabled": false,
+    "user_profile_enabled": false
+  },
+  "compression": {
+    "enabled": false
+  },
+  "auxiliary": {
+    "title_generation": {
+      "enabled": false
+    }
+  },
+  "stt": {
+    "enabled": false
+  },
+  "tools": {
+    "tool_search": {
+      "enabled": "off"
+    },
+    "connectors": {
+      "enabled": false
+    }
+  },
+  "mcp_servers": {
+    "pasteles": {
+      "command": "/home/seb/pasteles/.venv/bin/python",
+      "args": [
+        "-m",
+        "pasteles",
+        "mcp"
+      ],
+      "cwd": "/home/seb/pasteles",
+      "env": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "tools": {
+        "include": [
+          "ver_catalogo",
+          "recomendar_pasteles",
+          "cotizar_pedido"
+        ],
+        "prompts": false,
+        "resources": false
+      }
+    }
+  },
+  "platform_toolsets": {
+    "cli": [
+      "mcp-pasteles"
+    ],
+    "telegram": [
+      "mcp-pasteles"
+    ]
+  },
+  "plugins": {
+    "enabled": [
+      "pasteles-pagos"
+    ],
+    "isolation": "in_process",
+    "auto_update_check_hours": 0,
+    "auto_apply": false
+  },
+  "gateway": {
+    "standalone": true,
+    "platforms": {
+      "telegram": {
+        "extra": {
+          "dm_policy": "allowlist",
+          "group_policy": "disabled",
+          "allow_admin_from": [
+            "0"
+          ],
+          "user_allowed_commands": [
+            "start",
+            "new",
+            "pagar",
+            "pedido",
+            "stop"
+          ],
+          "max_concurrent_updates": 4
+        }
+      }
+    }
+  },
+  "display": {
+    "streaming": false
+  }
+}

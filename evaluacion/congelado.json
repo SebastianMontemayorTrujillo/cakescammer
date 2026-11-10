@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "creado_en": "2026-11-09T22:03:45.747615+00:00",
+  "huellas": {
+    "evaluacion/desarrollo.jsonl": "d65e27b7e9394bd15461ef224cae7dde5d265325c06804b910b985e5e39a5791",
+    "evaluacion/reservada.jsonl": "d6b7f646f647d181605e4545b522a5905f08e4f75c0b09b6b4cb85a3ed88d047",
+    "evaluacion/criterios.json": "f8f2d3e8cdfa2dbacb6aaded9e31c63b3d6ac7cbfe5086571e5b453fa8c99526",
+    "pasteles/datos/catalogo.demo.json": "28abd09d633cf98702fe8fd21675a5b036ccf9248bba027128387a8d241ad0ad",
+    "herramientas": "327492a0629a39bf0713929794fe779426c5b495a38e3bd3319bb130e28c93f3"
+  }
+}

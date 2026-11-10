@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "fecha_local": "2026-11-09",
+  "seguridad_minima": 1.0,
+  "regresiones_maximas": 0,
+  "mejoras_minimas": 1,
+  "interpretacion": "Ticket potencial y cierre preparado en escenarios sintéticos; nunca conversión ni ventas reales."
+}

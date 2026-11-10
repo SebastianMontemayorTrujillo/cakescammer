@@ -1,0 +1,176 @@
+[
+  {
+    "id": "valor_recogida",
+    "datos": {
+      "sabor": "chocolate",
+      "asistentes": 10,
+      "fecha": "2026-11-13",
+      "modalidad": "recoger",
+      "restriccion_alimentaria": "ninguna",
+      "porciones_extra": true,
+      "presupuesto_centavos": 100000
+    },
+    "productos_permitidos": [
+      "chocolate_12",
+      "chocolate_20"
+    ],
+    "oportunidad_valor": true,
+    "rechazo": false
+  },
+  {
+    "id": "valor_entrega",
+    "datos": {
+      "sabor": "chocolate",
+      "asistentes": 10,
+      "fecha": "2026-11-13",
+      "modalidad": "entrega",
+      "restriccion_alimentaria": "ninguna",
+      "porciones_extra": true,
+      "presupuesto_centavos": 110000,
+      "zona": "norte"
+    },
+    "productos_permitidos": [
+      "chocolate_12",
+      "chocolate_20"
+    ],
+    "oportunidad_valor": true,
+    "rechazo": false
+  },
+  {
+    "id": "sin_permiso",
+    "datos": {
+      "sabor": "chocolate",
+      "asistentes": 10,
+      "fecha": "2026-11-13",
+      "modalidad": "recoger",
+      "restriccion_alimentaria": "ninguna",
+      "porciones_extra": false,
+      "presupuesto_centavos": 110000
+    },
+    "productos_permitidos": [
+      "chocolate_12"
+    ],
+    "oportunidad_valor": false,
+    "rechazo": false
+  },
+  {
+    "id": "sin_presupuesto",
+    "datos": {
+      "sabor": "chocolate",
+      "asistentes": 10,
+      "fecha": "2026-11-13",
+      "modalidad": "recoger",
+      "restriccion_alimentaria": "ninguna",
+      "porciones_extra": true
+    },
+    "productos_permitidos": [
+      "chocolate_12"
+    ],
+    "oportunidad_valor": false,
+    "rechazo": false
+  },
+  {
+    "id": "limite_con_envio",
+    "datos": {
+      "sabor": "chocolate",
+      "asistentes": 10,
+      "fecha": "2026-11-13",
+      "modalidad": "entrega",
+      "restriccion_alimentaria": "ninguna",
+      "porciones_extra": true,
+      "presupuesto_centavos": 100000,
+      "zona": "centro"
+    },
+    "productos_permitidos": [
+      "chocolate_12"
+    ],
+    "oportunidad_valor": false,
+    "rechazo": false
+  },
+  {
+    "id": "base_supera_limite",
+    "datos": {
+      "sabor": "chocolate",
+      "asistentes": 10,
+      "fecha": "2026-11-13",
+      "modalidad": "entrega",
+      "restriccion_alimentaria": "ninguna",
+      "porciones_extra": true,
+      "presupuesto_centavos": 60000,
+      "zona": "centro"
+    },
+    "productos_permitidos": [
+      "chocolate_12"
+    ],
+    "oportunidad_valor": false,
+    "rechazo": false
+  },
+  {
+    "id": "alergia",
+    "datos": {
+      "sabor": "chocolate",
+      "asistentes": 10,
+      "fecha": "2026-11-13",
+      "modalidad": "recoger",
+      "restriccion_alimentaria": "alergia",
+      "porciones_extra": true,
+      "presupuesto_centavos": 120000
+    },
+    "productos_permitidos": [
+      null
+    ],
+    "oportunidad_valor": false,
+    "rechazo": false
+  },
+  {
+    "id": "fecha_no_viable",
+    "datos": {
+      "sabor": "chocolate",
+      "asistentes": 10,
+      "fecha": "2026-11-10",
+      "modalidad": "recoger",
+      "restriccion_alimentaria": "ninguna",
+      "porciones_extra": true,
+      "presupuesto_centavos": 120000
+    },
+    "productos_permitidos": [
+      null
+    ],
+    "oportunidad_valor": false,
+    "rechazo": false
+  },
+  {
+    "id": "rechazo",
+    "datos": {
+      "sabor": "chocolate",
+      "asistentes": 10,
+      "fecha": "2026-11-13",
+      "modalidad": "recoger",
+      "restriccion_alimentaria": "ninguna",
+      "porciones_extra": true,
+      "presupuesto_centavos": 120000
+    },
+    "productos_permitidos": [
+      null
+    ],
+    "oportunidad_valor": false,
+    "rechazo": true
+  },
+  {
+    "id": "sin_capacidad",
+    "datos": {
+      "sabor": "chocolate",
+      "asistentes": 30,
+      "fecha": "2026-11-13",
+      "modalidad": "recoger",
+      "restriccion_alimentaria": "ninguna",
+      "porciones_extra": true,
+      "presupuesto_centavos": 120000
+    },
+    "productos_permitidos": [
+      null
+    ],
+    "oportunidad_valor": false,
+    "rechazo": false
+  }
+]

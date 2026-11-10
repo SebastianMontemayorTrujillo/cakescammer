@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "creado_en": "2026-11-09T22:57:30.483315+00:00",
+  "huellas": {
+    "pasteles/evaluacion_rsi.py": "fbe0f580845db44b9049da6e3a6328b87d10c11361a9fae78d18bb2402026816",
+    "pasteles/negocio.py": "27a21e61c34450606d6f139bd8a4f391409542a189a5c486524eea5554cd8201",
+    "pasteles/herramientas.py": "62a029dcda74f08133895d79cafd34a3761fc902f83a16bb52e20d83260be15b",
+    "pasteles/datos/catalogo.demo.json": "28abd09d633cf98702fe8fd21675a5b036ccf9248bba027128387a8d241ad0ad",
+    "evaluacion_rsi/criterios.json": "546931fa5ce2bb27063707bef8f97abf8b5679b7f7c8d53fd1f5089bb9339e6d",
+    "evaluacion_rsi/desarrollo.jsonl": "bef0acda6ed2eccf47c5656fdec46b0ed9f67ed7040321552a5ad3e4e8b320d7",
+    "evaluacion_rsi/reservada.jsonl": "4ec069107c1b97222dca1ddb3d1c7e6785de2931757e1a85f2788b00d5bfd837"
+  }
+}

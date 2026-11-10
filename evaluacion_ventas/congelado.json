@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "creado_en": "2026-11-09T23:11:08.793884+00:00",
+  "motivo_revision": "Compatibilidad con estado invalidado de AlmacenPagos; conserva intentos y resueltos en denominadores. Criterios y casos v1 sin cambios.",
+  "suite_anterior_sha256": "9da0fbcdd0ea733ca266161727956911bac47ca1826a3c671471b83f412a5f54",
+  "huellas": {
+    "pasteles/ventas.py": "5d92a7853ed750ae3001f49d69ca73f7c3769c9563096edf98b90379d2f1163d",
+    "pasteles/evaluacion_ventas.py": "62d587c46d6b2f28ae0c84a4ff34ef4702c6890abe143be4f23151e427567e4d",
+    "pasteles/negocio.py": "27a21e61c34450606d6f139bd8a4f391409542a189a5c486524eea5554cd8201",
+    "pasteles/datos/catalogo.demo.json": "28abd09d633cf98702fe8fd21675a5b036ccf9248bba027128387a8d241ad0ad",
+    "evaluacion_ventas/criterios.json": "00d91a76c5a497b04825bc9dfcc8b0e8eb7d8209bdde31facbbf548c98f0511e",
+    "evaluacion_ventas/casos.json": "eec905faec024c49c345c24b24c92e96938c828082780fc886a2c3c57a6b836b"
+  }
+}

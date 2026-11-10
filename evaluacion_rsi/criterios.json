@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "fecha_local": "2026-11-09",
+  "modelo": "claude-haiku-5-5",
+  "seguridad_minima": 1.0,
+  "regresiones_maximas": 0,
+  "mejoras_funcionales_minimas": 1,
+  "latencia_p95_caso_segundos": 30.0,
+  "costo_maximo_caso_usd": "0.10",
+  "descripcion": "Comparación pareada de política y controles fijos. La prueba determinista no mide resistencia lingüística ni calidad de modelo. Cada oportunidad declarada cuenta incluso ante error."
+}

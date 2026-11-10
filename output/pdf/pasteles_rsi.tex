@@ -1,0 +1,754 @@
+% Compilar con XeLaTeX (dos pasadas) desde este directorio:
+% xelatex -interaction=nonstopmode -halt-on-error pasteles_rsi.tex
+% No requiere imágenes externas ni acceso a red.
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=21mm,top=20mm,bottom=20mm,headheight=15pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{TeX Gyre Pagella}
+\setsansfont{TeX Gyre Heros}
+\setmonofont[Scale=0.85]{DejaVu Sans Mono}
+\usepackage[spanish,es-noshorthands,es-nodecimaldot]{babel}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage[most]{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\definecolor{ink}{HTML}{173242}
+\definecolor{teal}{HTML}{087F8C}
+\definecolor{muted}{HTML}{526674}
+\definecolor{paper}{HTML}{F0F5F6}
+\definecolor{amber}{HTML}{9B651B}
+\definecolor{amberbg}{HTML}{FCF6EB}
+\color{ink}
+\hypersetup{colorlinks=true,linkcolor=teal,urlcolor=teal,
+  pdftitle={Pasteles: agentes personales y mejora recursiva},
+  pdfauthor={Proyecto Pasteles},pdfsubject={Arquitectura, ontología, RSI y ejemplos evaluados de conversación}}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\small\bfseries PASTELES\quad\textcolor{teal}{/}\quad INFORME DEL PROYECTO}
+\fancyhead[R]{\sffamily\small\textcolor{muted}{RSI · 2026}}
+\fancyfoot[L]{\sffamily\footnotesize\textcolor{muted}{Demostración privada · catálogo y pagos simulados}}
+\fancyfoot[R]{\sffamily\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+\titleformat{\section}{\sffamily\Large\bfseries\color{ink}}{\textcolor{teal}{\thesection}}{0.65em}{}
+\titleformat{\subsection}{\sffamily\normalsize\bfseries\color{teal}}{}{0pt}{}
+\titlespacing*{\section}{0pt}{0pt}{12pt}
+\titlespacing*{\subsection}{0pt}{13pt}{5pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\setlength{\emergencystretch}{2em}
+\setlist[itemize]{leftmargin=1.3em,itemsep=3pt,topsep=3pt}
+\setlist[enumerate]{leftmargin=1.55em,itemsep=5pt,topsep=3pt}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\eyebrow}[1]{{\sffamily\small\bfseries\color{teal}#1\par}}
+\newcommand{\source}[1]{\par{\footnotesize\color{muted}Fuente: #1.\par}}
+\newtcolorbox{nota}[1][]{colback=paper,colframe=teal,boxrule=0pt,
+  borderline west={2pt}{0pt}{teal},arc=0pt,left=10pt,right=10pt,top=8pt,bottom=8pt,#1}
+\newtcolorbox{limite}[1][]{colback=amberbg,colframe=amber,boxrule=0pt,
+  borderline west={2pt}{0pt}{amber},arc=0pt,left=10pt,right=10pt,top=8pt,bottom=8pt,#1}
+\newtcolorbox{dialogo}[2][]{enhanced,colback=paper,colframe=teal,
+  colbacktitle=teal,coltitle=white,fonttitle=\sffamily\small\bfseries,
+  fontupper=\small,boxrule=0pt,arc=0pt,left=9pt,right=9pt,top=8pt,bottom=8pt,
+  title={#2},#1}
+\newcommand{\habla}[2]{\textbf{#1}\enspace #2\par\smallskip}
+\tikzset{caja/.style={draw=teal!50,fill=paper,rounded corners=2pt,
+  align=center,font=\sffamily\small,inner sep=7pt,minimum height=12mm},
+  flecha/.style={-{Stealth[length=2mm]},thick,draw=teal},
+  rotulo/.style={font=\sffamily\scriptsize,fill=white,inner sep=2pt,align=center}}
+
+\begin{document}
+\thispagestyle{empty}
+\eyebrow{PROYECTO PARA EL HACKATÓN DE RECURSIVE SELF-IMPROVEMENT}
+\vspace{12mm}
+{\sffamily\fontsize{44}{48}\selectfont\bfseries PASTELES\par}
+\vspace{4mm}
+{\sffamily\fontsize{23}{29}\selectfont Agentes personales y\par mejora recursiva verificable\par}
+\vspace{6mm}
+{\large Un vendedor conversacional que evoluciona su harness\par y las skills que construyen a su sucesor.\par}
+\vspace{7mm}
+\textcolor{teal}{\rule{\linewidth}{1.5pt}}\par
+\vspace{5mm}
+\textbf{Resumen.} Pasteles es una demostración privada de venta de pasteles por
+Telegram. Un agente personal conserva preferencias del cliente; un agente
+vendedor recibe únicamente los datos autorizados para la conversación. Un modelo
+pequeño interpreta solicitudes, mientras el código calcula precios, verifica
+condiciones y controla pagos simulados.
+
+El ciclo RSI evalúa una versión, propone un cambio acotado a su harness y actualiza
+la skill del constructor. Una compuerta independiente decide si aceptar el
+sucesor. La versión aceptada construye la siguiente generación, con linaje,
+registro de rechazos y posibilidad de volver atrás.
+Este informe añade cuatro ejemplos de conversación y la medición de una
+corrección del diálogo motivada por una captura real del equipo.
+\vspace{4mm}
+\begin{nota}
+\begin{tabularx}{\linewidth}{@{}YYY@{}}
+{\sffamily\Large\bfseries 495} & {\sffamily\Large\bfseries 6/15 $\to$ 13/15} & {\sffamily\Large\bfseries 7/15 $\to$ 15/15}\\[3pt]
+Pruebas de software aprobadas & RSI: primer sucesor con Claude real & Experiencia: nueva evaluación con Claude real\\
+\end{tabularx}
+\end{nota}
+\begin{limite}
+\textbf{Alcance de la evidencia.} Son instrumentos distintos sobre guiones
+sintéticos. El catálogo y los pagos son ficticios. La reserva histórica alcanzó
+38/45 objetivos y corresponde al código anterior; la corrección reciente aún no
+tiene una reserva independiente. No se presentan propuestas como ventas.
+\end{limite}
+\vfill
+{\sffamily\small\textbf{Corte documental:} 9 de noviembre de 2026, 18:07 de Monterrey\par
+\textbf{Código de referencia:} \code{a242a35}, fases 5 a 9 registradas\par
+\textbf{Gasto acumulado al corte:} USD 0.045687 de un máximo de USD 5\par
+\textbf{Guía de lectura:} arquitectura y RSI en las secciones 1--4;
+ejemplos y nueva medición en 5--7; negocio, seguridad, panel y operación en 8--12.}
+
+\newpage
+\section{Del mensaje a una cotización verificable}
+El problema inicial fue concreto: el modelo podía omitir una nueva cotización
+después de un cambio de fecha o presupuesto. Reforzar el prompt mejoró parte de la
+conducta, pero no garantizó que se invocara la herramienta. El nuevo harness lleva
+esa decisión a una máquina de estado explícita.
+
+\begin{center}
+\begin{tikzpicture}[node distance=7mm]
+\node[caja,text width=29mm] (u) {Cliente\\Telegram};
+\node[caja,text width=33mm,right=of u] (a) {Adaptador\\autenticado};
+\node[caja,text width=33mm,right=of a] (h) {Harness\\de conversación};
+\node[caja,text width=29mm,right=of h] (b) {Motor\\de negocio};
+\node[caja,text width=40mm,below=13mm of h] (p) {Proxy local\\presupuesto persistente};
+\node[caja,text width=40mm,below=13mm of a,xshift=-15mm] (m) {Modelo pequeño\\extracción JSON};
+\draw[flecha] (u)--(a); \draw[flecha] (a)--(h); \draw[flecha] (h)--(b);
+\draw[flecha] (h)--node[rotulo,right]{reserva y\\validación}(p);
+\draw[flecha] (p)--node[rotulo,below]{API}(m);
+\end{tikzpicture}
+\end{center}
+{\small\textcolor{muted}{Esquema lógico: toda inferencia del modelo pasa por el proxy y la frontera LLM.}}
+
+\subsection{Responsabilidades separadas}
+\begin{tabularx}{\linewidth}{@{}P{32mm}Y@{}}
+\toprule
+\textbf{Componente} & \textbf{Qué hace}\\
+\midrule
+Adaptador & Autentica usuario y chat, serializa mensajes, consume comandos y evita que un error se delegue al agente general.\\
+Modelo & Extrae intención y campos permitidos: sabor, asistentes, fecha, entrega, restricciones y presupuesto.\\
+Harness & Conserva pedido y preguntas pendientes, decide qué falta, invalida la cotización anterior y ejecuta la política versionada.\\
+Negocio y pagos & Calculan importes en centavos, aplican disponibilidad y restricciones, y registran decisiones humanas de simulación.\\
+\bottomrule
+\end{tabularx}
+
+\subsection{Un turno ordinario}
+\begin{enumerate}
+\item Se invalida el pago anterior antes de esperar una respuesta del modelo.
+\item Se solicita una extracción JSON, con hasta 768 tokens de salida. El extractor
+recibe pedido, preguntas pendientes y última respuesta acotada; una entrada
+inválida borra el estado ambiguo y obliga a recoger los datos de nuevo.
+\item El harness combina los datos del turno con las preferencias autorizadas que
+permita la versión; los datos actuales tienen prioridad.
+\item Se comprueba la disponibilidad y el motor produce una cotización nueva cuando
+hay datos suficientes. El texto final y sus importes se
+construyen a partir de ese resultado; el modelo no aprueba el pago.
+\end{enumerate}
+
+\begin{nota}
+\textbf{Ejemplo.} Chocolate para 10 personas, entrega en centro: pastel de
+\$650 MXN y entrega de \$60 MXN, total de \$710 MXN. Si el presupuesto cambia a
+\$700, el motor devuelve \code{excede_presupuesto} y deshabilita el pago.
+\end{nota}
+\source{\code{pasteles/arnes.py}, \code{pasteles/negocio.py} y \code{pasteles/telegram_rsi.py}}
+
+\newpage
+\section{Ontología: personas, agentes y conversaciones}
+La ontología es el vocabulario compartido que permite identificar quién es dueño
+de un dato, qué agente puede actuar y qué significa cada mensaje. Se implementa
+como contratos tipados y un enrutador; los permisos se establecen fuera del texto
+que genera el modelo.
+
+\begin{center}
+\begin{tikzpicture}[node distance=9mm]
+\node[caja,text width=31mm] (pc) {Persona cliente};
+\node[caja,text width=31mm,below=of pc] (ac) {Agente personal};
+\node[caja,text width=31mm,below=of ac] (ctx) {Contexto privado};
+\node[caja,text width=38mm,right=17mm of ac] (conv) {Conversación\\para cotizar};
+\node[caja,text width=31mm,right=17mm of conv] (av) {Agente vendedor};
+\node[caja,text width=31mm,above=of av] (pv) {Persona pastelería};
+\node[caja,text width=31mm,below=of av] (sk) {Skills versionadas};
+\draw[flecha] (pc)--(ac); \draw[flecha] (ac)--(ctx);
+\draw[flecha] (pv)--(av); \draw[flecha] (av)--(sk);
+\draw[flecha] (ac)--(conv); \draw[flecha] (av)--(conv);
+\draw[flecha,dashed] (ctx.east)--node[rotulo,below]{solo campos\\autorizados}(conv.south);
+\end{tikzpicture}
+\end{center}
+
+\begin{tabularx}{\linewidth}{@{}P{35mm}Y@{}}
+\toprule
+\textbf{Entidad} & \textbf{Contrato}\\
+\midrule
+Persona y agente & Identidad opaca, propietario, rol, capacidades y referencias a skills. La autenticación procede del adaptador.\\
+Contexto & Preferencias estructuradas de un cliente. Guardarlas y compartirlas son permisos distintos.\\
+Conversación & Participantes y finalidad explícita: \code{cotizar_pastel}.\\
+Autorización & Concesión para campos concretos, origen, destino y conversación determinados.\\
+Sobre & Mensaje con origen, destino, tipo, datos y correlación. No crea permisos ni reemplaza una skill.\\
+\bottomrule
+\end{tabularx}
+
+\subsection{Tres mensajes con significado preciso}
+\code{pedido} comunica la solicitud del agente personal al vendedor.
+\code{cotizacion} devuelve solicitud y resultado vinculados por correlación; el
+enrutador comprueba que coincidan con el motor de negocio.
+\code{preferencias_compartidas} transporta únicamente el subconjunto concedido.
+
+\subsection{Memoria para un cliente frecuente}
+Se admiten sabor, modalidad, zona e idioma mediante valores enumerados. No se
+guardan instrucciones libres, precios, fechas ni restricciones alimentarias en
+esta memoria. Los archivos tienen nombres opacos derivados con HMAC, contenido
+firmado y permisos privados; el contexto de un cliente no se entrega al constructor.
+
+\begin{nota}
+\code{/recordar sabor=chocolate modalidad=recoger} autoriza guardar.\\
+\code{/compartir sabor modalidad} autoriza compartir en esa conversación.\\
+\code{/new} revoca la concesión; \code{/olvidar} borra las preferencias propias.
+\end{nota}
+\source{\code{pasteles/ontologia.py}, \code{pasteles/contexto_clientes.py} y \code{docs/ONTOLOGIA.md}}
+
+\newpage
+\section{Cómo funciona la mejora recursiva}
+La unidad que evoluciona es una versión del sistema de conversación. El modelo
+base permanece fijo. Cada versión incluye una política ejecutable del harness,
+una skill de vendedor y una skill de constructor:
+\[
+ V_n=(H_n,\,S_n^{\mathrm{vendedor}},\,S_n^{\mathrm{constructor}}).
+\]
+El constructor utiliza la versión aceptada y resultados agregados de desarrollo
+para producir un candidato. Su propia skill actualizada pasa al sucesor; por eso
+la siguiente generación no parte otra vez del constructor inicial.
+
+\begin{center}
+\begin{tikzpicture}[node distance=8mm]
+\node[caja,text width=39mm] (v) {Versión aceptada $V_n$};
+\node[caja,text width=39mm,right=of v] (e) {Evaluación y\\fallos agregados};
+\node[caja,text width=39mm,right=of e] (c) {Constructor con\\skill heredada};
+\node[caja,text width=39mm,below=12mm of c] (p) {Candidato $V_{n+1}$\\una hipótesis};
+\node[caja,text width=39mm,left=of p] (j) {Jueces\\independientes};
+\node[caja,text width=39mm,left=of j] (a) {Aceptar o conservar\\la versión anterior};
+\draw[flecha] (v)--(e); \draw[flecha] (e)--(c);
+\draw[flecha] (c)--(p); \draw[flecha] (p)--(j); \draw[flecha] (j)--(a);
+\draw[flecha] (a)--node[rotulo,left]{herencia}(v);
+\end{tikzpicture}
+\end{center}
+
+\subsection{Un espacio de cambios acotado}
+Un candidato modifica exactamente una decisión: cotización automática, uso de
+preferencias compartidas, una o dos preguntas por turno, cierre consultivo o
+estrategia comercial. Debe actualizar la skill del constructor; también puede
+revisar la del vendedor. La salida es un parche JSON que el orquestador ensambla y
+valida. No se ejecuta código generado. Si el JSON es inválido, se permite una sola
+corrección de formato, con el mismo presupuesto.
+
+\subsection{Compuerta de aceptación}
+La decisión compara comprobaciones pareadas bajo el mismo instrumento:
+\[
+ A=E\land O\land(S=1)\land(R=0)\land(M>0).
+\]
+Aquí $E$ significa evaluación íntegra y completa; $O$, costo y latencia dentro de
+los criterios; $S$, proporción de controles de seguridad aprobados; $R$, número de
+regresiones; y $M$, mejoras funcionales o comerciales. Una mejora comercial puede
+acompañarse de empate funcional, pero no compensar una regresión.
+
+\begin{limite}
+\textbf{Límite de autoridad.} El candidato no puede modificar juez, corpus,
+umbrales, presupuesto, modelo, permisos ni herramientas. Un empate detiene la
+ronda. Los resultados negativos se conservan y la versión anterior sigue activa.
+\end{limite}
+El manifiesto vincula contenido y padre mediante huellas. La bitácora identifica
+propuestas, decisiones y publicaciones; el rollback admite versiones iniciales o
+previamente aceptadas.
+\source{\code{pasteles/constructor_rsi.py}, \code{pasteles/orquestador_rsi.py} y \code{pasteles/versiones_rsi.py}}
+
+\newpage
+\section{Evaluaciones y evidencia observada}
+Los instrumentos separan comportamiento del harness, uso del modelo y operación
+del canal. Desarrollo sirve para proponer sucesores; la reserva observa el
+comportamiento en casos apartados y no se transmite al constructor. Los hashes fijan corpus,
+criterios y jueces; revisiones diferentes no se comparan como el mismo experimento.
+
+\begin{tabularx}{\linewidth}{@{}P{38mm}P{44mm}Y@{}}
+\toprule
+\textbf{Evidencia} & \textbf{Resultado} & \textbf{Qué permite afirmar}\\
+\midrule
+Suite de software actual & 495 pruebas aprobadas & Contratos y regresiones cubiertos por pruebas; no son 495 conversaciones reales.\\
+RSI determinista & 13/18 $\to$ 18/18; seguridad 119/119 & Mejora de política con reglas y extracciones preparadas.\\
+Sucesor real & 6/15 $\to$ 13/15; seguridad 119/119 & Siete mejoras pareadas, sin regresiones, con propuesta y extracción mediante Claude.\\
+Reserva RSI histórica & 36/36 conversaciones; 38/45 objetivos; seguridad 357/357 & Casos apartados del desarrollo, con siete objetivos incumplidos; evaluó el código anterior.\\
+Comercial sintética & Cierre 0/5 $\to$ 5/5; valor 0/2 $\to$ 2/2; seguridad 61/61 & Preparación del cierre y aprovechamiento de oportunidades definidas.\\
+\bottomrule
+\end{tabularx}
+\source{\code{docs/VERIFICACION.md} y reportes agregados indicados en la sección \ref{sec:fuentes}}
+
+\subsection{El historial incluye interrupciones y rechazos}
+\begin{enumerate}
+\item El ciclo determinista aceptó cuatro generaciones y rechazó la quinta por no
+mejorar. Su constructor fue de reglas: demuestra el mecanismo del ciclo.
+\item El primer ciclo real publicó un sucesor, pero terminó interrumpido al fallar
+el formato JSON de una propuesta posterior.
+\item El segundo intento real se interrumpió antes de publicar. Después de reducir
+la propuesta a un parche pequeño, un tercer ciclo evaluó y rechazó un empate.
+\end{enumerate}
+La versión real aceptada habilita recotización automática. Las políticas de
+preferencias automáticas, cierre consultivo y mayor valor todavía no fueron
+promovidas por el ciclo real.
+
+\subsection{Costo, latencia y lectura de los denominadores}
+La reserva consumió \textbf{USD 0.0058074}, con latencia p95 de \textbf{3.79 segundos}
+por caso. Al cerrar esa etapa, el gasto fue \textbf{USD 0.0413926 de 5}, sin reservas
+pendientes. Tras la corrección de experiencia y el uso intermedio del bot, el
+acumulado llegó a \textbf{USD 0.045687}; se detalla la nueva medición en la sección 7.
+
+\begin{limite}
+Los 18 objetivos deterministas y los 15 objetivos reales tienen distinto alcance:
+tres oportunidades corresponden a entradas estructuradas inválidas. No deben
+compararse como muestras equivalentes. Tampoco los 495 tests ni el 100\% de los
+controles cubiertos demuestran superioridad estadística o inmunidad universal.
+\end{limite}
+
+\newpage
+\section{Ejemplos: intención y respuestas breves}
+Una captura de Telegram mostró fallos que los benchmarks previos no explicaban
+bien: un «no» alimentario cancelaba la compra y una petición informal recibía una
+respuesta de seguridad. Se reprodujeron en un instrumento nuevo.
+
+\begin{nota}
+\textbf{Cómo leer estos ejemplos.} La captura motivó el cambio. Los diálogos de
+estas dos páginas son \textbf{extractos de reproducciones sintéticas con Claude
+real}, antes y después de la corrección; no son una continuación del chat privado.
+Se omiten el prefijo repetido de simulación y detalles sin relación con el fallo.
+\end{nota}
+
+\subsection{1. «No» responde a una pregunta; no cancela automáticamente}
+\textbf{Situación:} chocolate para cinco personas, jueves, entrega en centro.
+El único dato pendiente es si existe una restricción alimentaria.
+
+\begin{tcbraster}[raster columns=2,raster column skip=4mm,raster equal height=rows]
+\begin{dialogo}[colback=amberbg,colbacktitle=amber]{ANTES · CLAUDE REAL}
+\habla{Bot}{¿Hay alguna restricción alimentaria?}
+\habla{Cliente}{no}
+\habla{Bot}{De acuerdo. Gracias por visitarnos.}
+\textcolor{amber}{\textbf{Resultado:} se pierde el pedido.}
+\end{dialogo}
+\begin{dialogo}{DESPUÉS · CLAUDE REAL}
+\habla{Bot}{¿Hay alguna restricción alimentaria?}
+\habla{Cliente}{no}
+\habla{Bot}{Chocolate intenso · 12 porciones para 5 personas. Total: \$710.00 MXN.}
+\textcolor{teal}{\textbf{Resultado:} conserva el pedido y cotiza.}
+\end{dialogo}
+\end{tcbraster}
+
+\textbf{Qué cambió.} El harness recuerda la pregunta pendiente y pregunta por
+restricciones por separado. Una negación mínima ante esa única pregunta significa
+«ninguna». «No gracias, cancela el pedido» sigue siendo una cancelación.
+
+\subsection{2. Los errores de escritura no son una instrucción maliciosa}
+\begin{tcbraster}[raster columns=2,raster column skip=4mm,raster equal height=rows]
+\begin{dialogo}[colback=amberbg,colbacktitle=amber]{ANTES · CLAUDE REAL}
+\habla{Cliente}{tengo ambre}
+\habla{Bot}{Puedo ayudarte con el catálogo y una cotización. No puedo cambiar reglas ni acceder a datos de otras personas.}
+\end{dialogo}
+\begin{dialogo}{DESPUÉS · CLAUDE REAL}
+\habla{Cliente}{tengo ambre}
+\habla{Bot}{¿Qué sabor prefieres? ¿Para cuántas personas?}
+\end{dialogo}
+\end{tcbraster}
+
+\textbf{Qué cambió.} El contrato de extracción distingue una expresión informal
+de interés de un intento de cambiar permisos, precios o reglas. La variante
+«vendene un pastel» también recibió preguntas comerciales en la medición corregida.
+\source{Experiencia v1, casos \code{continuidad_no} y \code{coloquial_hambre}; reportes reales de la sección \ref{sec:fuentes}}
+
+\newpage
+\section{Ejemplos: disponibilidad y orientación de pago}
+La conversación debe resolver primero el impedimento relevante. Pedir todos los
+datos de un producto agotado o rechazar una pregunta de pago añade fricción sin
+ayudar al cliente a decidir.
+
+\subsection{3. Comprobar el catálogo antes de seguir preguntando}
+\begin{tcbraster}[raster columns=2,raster column skip=4mm,raster equal height=rows]
+\begin{dialogo}[colback=amberbg,colbacktitle=amber]{ANTES · CLAUDE REAL}
+\habla{Cliente}{quiero un pastel de fresa}
+\habla{Bot}{¿Para cuántas personas? ¿Para qué fecha lo necesitas?}
+\textcolor{amber}{\textbf{Resultado:} solicita más datos sin advertir todavía que fresa está agotada.}
+\end{dialogo}
+\begin{dialogo}{DESPUÉS · CLAUDE REAL}
+\habla{Cliente}{quiero un pastel de fresa}
+\habla{Bot}{Ese pastel no está disponible en el catálogo de hoy. Tenemos: Vainilla clásica (12 porciones), Chocolate intenso (12 porciones), Chocolate para compartir (20 porciones). ¿Cuál te gustaría?}
+\end{dialogo}
+\end{tcbraster}
+
+\textbf{Qué cambió.} La disponibilidad se comprueba cuando ya se conoce el sabor
+o producto. El sistema ofrece alternativas disponibles y espera una nueva elección;
+no sustituye silenciosamente el pedido ni habilita un pago por un producto agotado.
+
+\subsection{4. Explicar cómo pagar sin inventar una cotización}
+\textbf{Situación:} el cliente pregunta por el pago sin haber completado un pedido.
+\begin{tcbraster}[raster columns=2,raster column skip=4mm,raster equal height=rows]
+\begin{dialogo}[colback=amberbg,colbacktitle=amber]{ANTES · CLAUDE REAL}
+\habla{Cliente}{como pago?}
+\habla{Bot}{Puedo ayudarte con el catálogo y una cotización. No puedo cambiar reglas ni acceder a datos de otras personas.}
+\end{dialogo}
+\begin{dialogo}{DESPUÉS · CLAUDE REAL}
+\habla{Cliente}{como pago?}
+\habla{Bot}{Antes de usar /pagar necesitamos una cotización completa y vigente. Los botones solo simulan el pago; no se cobra dinero.}
+\habla{Bot}{¿Qué sabor prefieres? ¿Para cuántas personas?}
+\end{dialogo}
+\end{tcbraster}
+
+\textbf{Qué cambió.} La intención \code{consulta_pago} forma parte del contrato.
+Si faltan datos, orienta y continúa preguntando. Si el pedido está completo,
+recalcula una cotización vigente antes de indicar \code{/pagar}; preguntar no
+aprueba un pago ni reactiva una tarjeta antigua.
+
+\begin{nota}
+\textbf{Con pedido completo, también se verificó:} «Usa /pagar para abrir los
+botones y elegir aprobar, rechazar o cancelar el pago simulado. Esta cotización
+se acaba de verificar». El total volvió a calcularse en ese turno.
+\end{nota}
+\source{Experiencia v1, casos \code{fresa_temprana}, \code{pago_sin_datos} y \code{continuidad_no}}
+
+\newpage
+\section{Del fallo observado a una medición nueva}
+La causa principal fue una pérdida de contexto: el extractor recibía el pedido
+acumulado, pero no la pregunta que el bot acababa de formular. La corrección
+añadió preguntas pendientes y la última respuesta, limitada a 2\,000 caracteres,
+además de disponibilidad temprana y orientación de pago.
+
+\subsection{Experiencia v1: mismo instrumento, dos revisiones del código}
+Se definieron \textbf{ocho conversaciones públicas sintéticas}, con \textbf{15
+objetivos y 120 controles}. Se congelaron casos, criterios y juez antes de medir.
+Modelo y versión declarativa fueron iguales; cambió el código del harness. Cada
+modalidad se ejecutó una vez por revisión.
+
+\begin{tabularx}{\linewidth}{@{}Yrr@{}}
+\toprule
+\textbf{Medida} & \textbf{Anterior} & \textbf{Corregido}\\
+\midrule
+Objetivos con JSON preparado & 11/15 & 15/15\\
+Objetivos con Claude real & 7/15 & 15/15\\
+Controles, en ambas modalidades & 120/120 & 120/120\\
+Conversaciones reales completas & 8/8 & 8/8\\
+Costo de la corrida real, USD & 0.0014839 & 0.0020912\\
+Latencia p95 por conversación & 2.53 s & 2.61 s\\
+\bottomrule
+\end{tabularx}
+
+\begin{center}
+\begin{tikzpicture}[x=0.085\linewidth,y=8mm]
+\node[anchor=east,font=\sffamily\small] at (0,1) {Anterior};
+\node[anchor=east,font=\sffamily\small] at (0,0) {Corregido};
+\fill[paper] (0.15,0.74) rectangle (8.15,1.26);
+\fill[paper] (0.15,-0.26) rectangle (8.15,0.26);
+\fill[amber!70] (0.15,0.74) rectangle (3.883,1.26);
+\fill[teal] (0.15,-0.26) rectangle (8.15,0.26);
+\node[anchor=west,font=\sffamily\small] at (8.35,1) {7/15};
+\node[anchor=west,font=\sffamily\small] at (8.35,0) {15/15};
+\end{tikzpicture}
+\end{center}
+{\small\textcolor{muted}{Objetivos cumplidos con Claude real. Escala común de cero a quince; sin banda de significancia estadística.}}
+
+\subsection{El evaluador también debe detectar errores}
+El juez contrasta estado, preguntas, solicitud, cotización y pago. Se prueba que
+rechace cotizaciones antiguas y que un promedio favorable no oculte una regresión.
+Una interrupción conserva objetivos pendientes como fallos. La prueba offline usa
+JSON preparado; la real exige que Claude interprete los mensajes.
+
+Las dos corridas reales costaron \textbf{USD 0.0035751} en conjunto. El acumulado
+fue \textbf{USD 0.045687 de 5}, sin reservas pendientes. La suite completa pasó
+\textbf{495 tests}. El bot estuvo detenido durante la medición y se reinició con
+la corrección a las 18:07 de Monterrey.
+
+\begin{limite}
+\textbf{Qué demuestra y qué falta.} Es una corrección de ingeniería, no una
+promoción autónoma RSI. El 15/15 corresponde a desarrollo público con una
+repetición; no hay reserva independiente de este código. El juez comparte el motor
+de negocio con la aplicación. La prueba no ejecuta Telegram ni decisiones humanas
+de pago, y no acredita naturalidad, satisfacción, conversión o ventas.
+\end{limite}
+\source{\code{evaluacion_experiencia/README.md}, \code{pasteles/evaluacion_experiencia.py} y \code{docs/VERIFICACION.md}}
+
+\newpage
+\section{Estrategia comercial para un modelo pequeño}
+El vendedor busca facilitar una decisión informada y aumentar el valor de opciones
+pertinentes. La estrategia combina descubrimiento progresivo, comparación de
+beneficios, reducción de incertidumbre y una invitación clara al siguiente paso.
+El cliente conserva la decisión de aprobar, rechazar o cancelar la simulación.
+
+\begin{enumerate}
+\item \textbf{Descubrir la necesidad.} Obtener fecha, asistentes, sabor,
+restricciones, modalidad y presupuesto, sin repetir información ya autorizada.
+\item \textbf{Explicar la opción base.} Mostrar porciones, precio completo y entrega.
+La cotización debe corresponder al motor de negocio.
+\item \textbf{Proponer más valor.} Si el cliente quiere porciones extra y tiene un
+presupuesto explícito suficiente, comparar una opción mayor con beneficio e
+incremento de precio concretos.
+\item \textbf{Preparar el cierre.} Ante una cotización viable, preguntar si desea
+probar esa opción e indicar \code{/pagar}. Un rechazo cierra el intento.
+\item \textbf{Medir y aprender.} Registrar oportunidades, decisiones y resultados;
+proponer una sola hipótesis por generación y conservar las que fallen.
+\end{enumerate}
+
+\subsection{Dos políticas comerciales}
+\textbf{Ajuste} elige la opción de menor precio que satisface la solicitud.
+\textbf{Valor} puede ofrecer una opción de más porciones si el cliente las desea y
+el total, incluida la entrega, cabe en el presupuesto. La selección busca el mayor
+importe entre esas alternativas autorizadas:
+\[
+ p^{*}=\arg\max_{p\in\mathcal{F}}\operatorname{total}(p),
+ \qquad \operatorname{total}(p)\leq B.
+\]
+$\mathcal{F}$ contiene únicamente alternativas disponibles, suficientes,
+compatibles con sabor, fecha, restricciones y preferencia de porciones extra;
+$B$ es el presupuesto declarado. Si la opción base ya supera $B$, el sistema
+conserva el impedimento visible y no habilita el pago.
+
+\begin{nota}
+\textbf{Ejemplo de propuesta.} Ocho porciones adicionales por \$300 MXN más, con
+total de entrega incluido. La explicación muestra qué obtiene el cliente y cuánto
+cuesta; el catálogo demo no aporta evidencia para argumentos de escasez, urgencia
+o reseñas.
+\end{nota}
+
+\subsection{Qué significa maximizar ventas en esta demo}
+En \textbf{dos escenarios sintéticos}, el ticket potencial medio pasó de
+\textbf{\$695 a \$995 MXN}. Esta métrica describe propuestas, no compras ni una
+probabilidad estimada de conversión. En la versión real activa esas políticas
+comerciales avanzadas aún no se han promovido.
+
+El embudo observado usa exportaciones de pagos simulados. Calcula aprobaciones
+sobre todos los intentos y sobre los resueltos, ingreso simulado y ticket de los
+aprobados. Rechazos, cancelaciones, caducados e invalidados permanecen visibles;
+solo los pendientes se excluyen del denominador de resueltos. Cero oportunidades
+produce una proporción no aplicable, nunca un éxito ficticio.
+\source{\code{pasteles/ventas.py}, \code{pasteles/evaluacion_ventas.py} y \code{docs/ESTRATEGIA_COMERCIAL.md}}
+
+\newpage
+\section{Seguridad y protección del experimento}
+Las defensas separan datos de autoridad. La entrada de un cliente puede expresar
+una solicitud, pero no conceder un rol, editar una skill, cambiar el catálogo ni
+aprobar un pago. El modelo no recibe una herramienta de escritura sobre el
+sistema ni los archivos privados de otros clientes.
+
+\begin{tabularx}{\linewidth}{@{}P{39mm}Y@{}}
+\toprule
+\textbf{Riesgo} & \textbf{Control implementado}\\
+\midrule
+Suplantación de identidad & Origen autenticado por Telegram; agente y permisos registrados por el orquestador, no aceptados desde el modelo.\\
+Instrucciones en datos & Extracción con esquema cerrado, contexto enumerado y sobres que rechazan campos ajenos al contrato.\\
+Precio o pago inventado & Importe calculado por el motor; botón vinculado a usuario, chat, mensaje y generación vigentes.\\
+Cotización obsoleta & Invalidación antes de inferir; nueva cotización al cambiar datos; ediciones y resultados tardíos no reviven la tarjeta.\\
+Confusión visual & Texto decorativo citado con controles de formato escapados, separado de precios y estados del sistema.\\
+Fuga de memoria & Archivos privados por cliente, validación de enlaces y contenido; concesión explícita para cada subconjunto compartido.\\
+Manipulación de evals & Juez y criterios fuera de las versiones editables; hashes, reportes históricos y reservado excluido del constructor.\\
+\bottomrule
+\end{tabularx}
+
+\subsection{Presupuesto como estado persistente}
+Toda inferencia pasa por \code{pasteles/llm.py}. La cuenta reserva capacidad antes
+de llamar al proveedor y liquida el consumo cuando lo conoce. Una llamada incierta
+conserva su reserva. Reiniciar el programa no reinicia el saldo, y el tope de
+\textbf{USD 5 acumulados} incluye conversaciones, evaluación y construcción.
+
+La clave de Anthropic se recibe por entorno y permanece en el proceso del proxy;
+Hermes usa una credencial local distinta. El proxy escucha en loopback. Los tests
+usan clientes falsos y no requieren llamadas a la API.
+
+\subsection{Fallos tratados como parte del diseño}
+Un JSON inválido, una cuota agotada, una respuesta tardía o una evaluación
+incompleta detienen la operación correspondiente y conservan la evidencia.
+El adaptador consume el mensaje incluso al fallar: no lo transfiere a un agente
+general con capacidades más amplias. La publicación registra la aceptación antes
+de cambiar el puntero de la versión activa.
+
+\begin{limite}
+\textbf{Límite de la garantía.} Las pruebas cubren ataques y fronteras concretas.
+La comprensión lingüística puede fallar y quedan objetivos pendientes en la
+reserva. La seguridad del prototipo no equivale a inmunidad frente a toda
+prompt injection ni a aprobación para atender clientes reales.
+\end{limite}
+\source{\code{docs/RSI.md}, módulos de contexto, ontología, presupuesto y transporte, y sus tests}
+
+\newpage
+\section{Cuándo cambia el agente en operación}
+Actualmente el ciclo RSI real se inicia de forma explícita. El bot y la evaluación
+comparten un bloqueo: primero se detiene Telegram, se ejecuta el ciclo y después
+se reinicia el servicio con la última versión aceptada. No existe un disparador
+automático por número de mensajes o ventas.
+
+\begin{center}
+\begin{tikzpicture}[node distance=6mm]
+\node[caja,text width=28mm] (s) {Detener bot};
+\node[caja,text width=32mm,right=of s] (e) {Proponer y\\evaluar};
+\node[caja,text width=33mm,right=of e] (a) {Publicar si pasa\\la compuerta};
+\node[caja,text width=30mm,right=of a] (r) {Reiniciar\\Telegram};
+\draw[flecha] (s)--(e); \draw[flecha] (e)--(a); \draw[flecha] (a)--(r);
+\end{tikzpicture}
+\end{center}
+
+Cada conversación carga una versión al crearse y la conserva mientras existe.
+Un candidato aceptado pasa a ser el padre de la generación siguiente, pero el
+cliente verá los cambios cuando el bot vuelva a crear la conversación. El reinicio
+invalida las cotizaciones anteriores. Un rechazo posterior no elimina al último
+sucesor ya aceptado.
+
+\begin{tabularx}{\linewidth}{@{}P{46mm}Y@{}}
+\toprule
+\textbf{Qué cambia} & \textbf{Disparador}\\
+\midrule
+Contexto personal & Comandos explícitos del cliente para guardar, compartir o borrar.\\
+Política y skills & Candidato aprobado y publicación en la línea real.\\
+Código base del harness & Corrección de ingeniería verificada por separado, con identificación de la revisión evaluada.\\
+Juez, permisos y presupuesto & Permanecen fuera de la autoridad del constructor RSI.\\
+Modelo base & Permanece fijo en este experimento; no hay ajuste de pesos.\\
+\bottomrule
+\end{tabularx}
+
+\begin{limite}
+\textbf{Publicación y reserva son pasos distintos.} La promoción actual usa
+desarrollo y comprobaciones comerciales. La reserva se ejecuta aparte; todavía
+no es una condición obligatoria previa a publicar. El entorno activo es una demo
+privada y la aceptación empírica no constituye validación comercial final.
+\end{limite}
+
+\subsection{Estado de la versión documentada}
+El sucesor real \code{b37113db...} habilita cotización automática. La memoria y
+los permisos para compartir están disponibles, pero aplicar automáticamente esas
+preferencias depende de la política aceptada. El cierre consultivo y la estrategia
+de mayor valor están implementados y probados en la línea de simulación; no se
+fuerza su promoción a la línea real para presentar mejores cifras.
+La revisión \code{a242a35} conserva esa política y añade la corrección contextual
+descrita en los ejemplos. El panel identifica tanto la versión declarativa como
+el SHA del código: la reserva anterior no valida automáticamente esta revisión.
+
+\subsection{Próximos pasos}
+Para evolucionar hacia un servicio público harían falta validación de experiencia
+con personas, una condición explícita de aceptación final previa al despliegue y
+observación del embudo real. Si los fallos reservados actuales se utilizan para
+diseñar otra mejora, se necesitará una nueva reserva independiente. Estas tareas
+se mantienen separadas de los entregables ya implementados.
+\source{\code{pasteles/__main__.py}, \code{pasteles/orquestador_rsi.py} y \code{pasteles/telegram_rsi.py}}
+
+\newpage
+\section{Dónde se puede ver la mejora}
+El dashboard local reúne evidencia agregada, versiones y decisiones. Se abre con
+\code{./PANEL.sh} en \href{http://127.0.0.1:8765}{http://127.0.0.1:8765}. Es de
+solo lectura: no llama al modelo, no acepta candidatos ni modifica el presupuesto.
+
+\begin{tabularx}{\linewidth}{@{}P{36mm}YY@{}}
+\toprule
+\textbf{Vista} & \textbf{Qué muestra} & \textbf{Cómo interpretarla}\\
+\midrule
+Modelo real & Corridas con llamadas a Claude y sus costos. & Los mensajes siguen siendo guiones sintéticos; no son indicadores de clientes en producción.\\
+Simulación & Extracciones preparadas y ciclo con constructor de reglas. & Demuestra lógica y controles, no comprensión lingüística.\\
+Experiencia & Código anterior: 7/15; corregido: 15/15, en la línea real. & Nuevo instrumento de desarrollo, derivado de fallos observados.\\
+Reserva & Resultado histórico de 38/45, junto a la revisión evaluada. & No valida un código que cambió después; falta reserva de la revisión actual.\\
+Historial & Publicaciones, rechazos e intentos interrumpidos. & Una corrida interrumpida puede conservar un sucesor publicado previamente.\\
+\bottomrule
+\end{tabularx}
+
+\subsection{Dos identidades para no atribuir una mejora al código equivocado}
+La versión declarativa identifica política y skills. El SHA del harness identifica
+el código que las ejecuta. Ambos deben coincidir para señalar que una reserva
+corresponde a la implementación actual. La corrección de los ejemplos cambió el
+segundo, manteniendo la política RSI aceptada.
+
+\begin{nota}
+\textbf{Leer una medición.} En la tabla de experiencia, comprobar tipo de ejecución,
+revisión del código, objetivos, controles y conversaciones completas. Después,
+consultar el instrumento y los criterios. «15/15» sin esos datos no permite saber
+qué se ejecutó ni si el resultado corresponde al bot actual.
+\end{nota}
+
+\subsection{Actualizar la vista no vuelve a evaluar al agente}
+El panel vuelve a leer archivos cada 30 segundos. Nuevas puntuaciones aparecen
+cuando se ejecuta otra evaluación; los mensajes de Telegram no se puntúan
+automáticamente. El gasto sí puede cambiar si el bot sigue atendiendo mensajes,
+porque todas las llamadas usan la misma cuenta acumulada.
+
+Para repetir únicamente el instrumento de experiencia:
+\begin{nota}
+{\ttfamily\small
+.venv/bin/python -m pasteles experiencia --modo offline\par
+.venv/bin/python -m pasteles experiencia --modo real}
+\end{nota}
+La segunda orden necesita el bot detenido y la clave en el entorno; consume
+presupuesto. Repetir desarrollo no lo convierte en un conjunto reservado.
+\source{\code{docs/PANEL.md}, \code{pasteles/panel_datos.py} y \code{pasteles/panel_experiencia.py}}
+
+\newpage
+\section{Reproducción y trazabilidad}
+\label{sec:fuentes}
+Los comandos se ejecutan desde la raíz del proyecto. La simulación conserva una
+línea independiente; no publica sus versiones en el bot real. Las llamadas reales
+comparten el presupuesto ya consumido.
+
+\begin{nota}
+{\ttfamily\small
+make verificar\par
+./RSI.sh simulacion 5\par
+./RSI.sh real 4\par
+.venv/bin/python -m pasteles rsi estado --modo real\par
+.venv/bin/python -m pasteles configurar --rsi\par
+./INICIAR.sh}
+\end{nota}
+El bot debe detenerse antes del ciclo. El script real pide la clave de manera
+oculta si no existe en el entorno; no debe incluirse en argumentos, documentos
+ni repositorios. Repetir una corrida crea otro reporte; no hay que borrar la
+contabilidad para repetir la demo.
+
+\subsection{Mapa de artefactos}
+\begin{tabularx}{\linewidth}{@{}P{62mm}Y@{}}
+\toprule
+\textbf{Ruta relativa} & \textbf{Contenido}\\
+\midrule
+\code{.runtime/rsi/versiones/} & Harness, skills y manifiestos de la línea real.\\
+\code{.runtime/rsi-simulacion/} & Versiones y decisiones de simulación.\\
+\code{resultados/rsi/} & Evaluaciones y ciclos reales, incluidos fallos.\\
+\code{resultados/simulacion/rsi/} & Evidencia determinista claramente etiquetada.\\
+\code{evaluacion_rsi/} & Instrumento RSI congelado, desarrollo y reserva.\\
+\code{evaluacion_ventas/} & Instrumento comercial y snapshot de su revisión anterior.\\
+\bottomrule
+\end{tabularx}
+
+\subsection{Fuentes locales del informe}
+\begin{enumerate}[label=\textbf{[\arabic*]},itemsep=4pt,font=\small]
+\small
+\item \code{docs/VERIFICACION.md}: historial de pruebas, mediciones, límites y gasto.
+\item \code{docs/RSI.md}, \code{docs/ONTOLOGIA.md} y
+\code{docs/ESTRATEGIA_COMERCIAL.md}: contratos y decisiones de arquitectura.
+\item Simulación: \code{20261109T231432-83a1b09c87/reporte.json}, bajo
+\code{resultados/simulacion/rsi/}.
+\item Ciclos reales bajo \code{resultados/rsi/}, cada uno con su \code{reporte.json}:\\
+\code{20261109T231515-de256961a1},\\
+\code{20261109T231814-f5b7882632},\\
+\code{20261109T232058-d5c7664649}.
+\item Reserva real: \code{rsi-20261109T232300-9e9be651d2/reporte.json},
+bajo \code{resultados/rsi/}. Se utilizaron sus agregados, no los casos para diseñar mejoras.
+\item Experiencia real, bajo \code{resultados/experiencia/}:\\
+\code{experiencia-20261110T000614-f0a5cb2464/reporte.json} (anterior),\\
+\code{experiencia-20261110T000627-b3ecb5f0d7/reporte.json} (corregido).\\
+Sus trazas públicas contienen los extractos de las secciones 5 y 6; las carpetas
+usan hora UTC, equivalente a las 18:06 del 9 de noviembre en Monterrey.
+\item \code{evaluacion_experiencia/README.md}, casos, criterios y manifiesto de
+congelación: protocolo de la corrección; \code{docs/PANEL.md}: lectura del dashboard.
+\end{enumerate}
+
+\vfill
+\textcolor{teal}{\rule{\linewidth}{0.8pt}}
+{\small\textbf{Tesis del proyecto.} La contribución demostrada es un sistema que
+puede construir, medir, heredar y rechazar cambios sobre sí mismo dentro de un
+contrato explícito. La evidencia comercial y de calidad mantiene su alcance
+visible, junto con los resultados negativos.}
+\end{document}

@@ -1,0 +1,16 @@
+{
+  "nombre": "Pastelería de demostración",
+  "moneda": "MXN",
+  "zona_horaria": "America/Monterrey",
+  "anticipacion_dias": 2,
+  "horizonte_dias": 60,
+  "fechas_cerradas": ["2026-11-14"],
+  "mensaje_personalizado_maximo": 40,
+  "zonas_entrega_centavos": {"centro": 6000, "norte": 9000},
+  "productos": [
+    {"id": "vainilla_12", "nombre": "Vainilla clásica", "sabor": "vainilla", "porciones": 12, "precio_centavos": 55000, "disponible": true, "alergenos": ["trigo", "huevo", "leche"]},
+    {"id": "chocolate_12", "nombre": "Chocolate intenso", "sabor": "chocolate", "porciones": 12, "precio_centavos": 65000, "disponible": true, "alergenos": ["trigo", "huevo", "leche", "soya"]},
+    {"id": "chocolate_20", "nombre": "Chocolate para compartir", "sabor": "chocolate", "porciones": 20, "precio_centavos": 95000, "disponible": true, "alergenos": ["trigo", "huevo", "leche", "soya"]},
+    {"id": "fresa_12", "nombre": "Fresa con crema", "sabor": "fresa", "porciones": 12, "precio_centavos": 70000, "disponible": false, "alergenos": ["trigo", "huevo", "leche"]}
+  ]
+}
